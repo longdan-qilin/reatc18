@@ -1,85 +1,60 @@
 // import logo from "./logo.svg";
 import "./App.css";
-import React from "react";
-class App extends React.Component {
-  constructor() {
-    super();
-    // console.log("constructor");
-    this.state = {
-      name: "张三",
-      money: 1000,
-    };
-  }
+import { useEffect, useState } from "react";
 
-  /**
-   * 静态方法，用于根据组件的 props 和 state 计算派生状态。
-   *
-   * @param props - 组件的 props 对象。
-   * @param state - 组件的 state 对象。
-   * @returns 返回一个新的对象，该对象将作为组件的派生状态。
-   */
-  static getDerivedStateFromProps(props, state) {
-    // console.log("getDerivedStateFromProps");
-    // console.log("props", props);
-    // console.log("state", state);
-    // if (state.money === 1000) {
-    //   return {
-    //     money: "一千元",
-    //     name: "王五",
-    //   };
-    // }
-    return null; // 返回 null 表示不更新状态
-  }
-  /**
-   * 在最近的渲染输出提交给DOM之前调用此方法。
-   * 它允许类组件在它们将要更新之前“捕捉”一些信息（例如滚动位置）。
-   * 这个生命周期返回的任何值都将作为参数传递给componentDidUpdate()。
-   *
-   * @param {Object} prevProps - 上一次的props对象。
-   * @param {Object} prevState - 上一次的状态对象。
-   * @returns {any} 返回一个值，这个值将作为参数传递给componentDidUpdate()。
-   */
-  getSnapshotBeforeUpdate(prevProps, prevState) {
-    console.log("getSnapshotBeforeUpdate");
-    return {
-      snapshot: "快照数据",
-    };
-  }
-  // 组件挂载完成之后执行
-  componentDidMount() {
-    console.log("componentDidMount 组件挂载完成");
-  }
+function Bpp() {
+  const [show, setShow] = useState(true);
 
-  /**
-   * 当组件更新时调用
-   *
-   * @param prevProps 上一次的 props
-   * @param prevState 上一次的状态
-   * @param snapshot 快照值，用于持久化 UI 状态（在 React 16.8 及更高版本中可用）
-   */
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log("componentDidUpdate");
-    console.log("prevProps", prevProps);
-    console.log("prevState", prevState);
-    console.log("snapshot", snapshot);
-  }
-  handle = () => {
-    this.setState({
-      name: "李四",
-    });
+  return (
+    <div>
+      {show && <App />}
+      <button onClick={() => setShow(!show)}>切换显示隐藏</button>
+    </div>
+  );
+}
+function App() {
+  // 定义一个状态，初始值为0
+  const [count, setCount] = useState(0);
+  const [name, setName] = useState(() => {
+    return "张三";
+  });
+  // 定义一个函数，用于改变状态
+  const clickFun = () => {
+    setCount(count + 1);
   };
-  render() {
-    console.log("render");
-    const { name, money } = this.state;
-    return (
-      <div>
-        <h1>
-          {name} - {money}
-        </h1>
-        <button onClick={this.handle}>切换数据</button>
-      </div>
-    );
-  }
+  const btn_click2 = () => {
+    setName("李四");
+  };
+  /* 
+    useEffect 第一个参数是一个函数，第二个参数是一个数组
+    当第二个参数为空数组时，表示只在组件第一次渲染的时候执行
+    当第二个参数不为空数组时，表示只在组件第一次渲染和依赖项变化的时候执行
+    useEffect 相当于 componentDidMount 和 componentDidUpdate 的组合
+
+    当我们传入依赖项[a], 当传入多个依赖项的时候[a,b], a或者b发生变化都执行
+  */
+  useEffect(() => {
+    console.log("useEffect 执行了", count);
+    return () => {
+      console.log("effect 清理函数执行了", count);
+    };
+  }, [count]);
+  useEffect(() => {
+    console.log(name);
+  }, [name]);
+  useEffect(() => {
+    console.log("我是一个副作用");
+  }, [count, name]);
+  // jsx 语法规则： 1. 标签必须闭合，2. 标签必须有根元素
+  return (
+    <div>
+      <h1>
+        hello word - {count} - {name}
+      </h1>
+      <button onClick={clickFun}>+1</button>
+      <button onClick={btn_click2}>点我修改名字</button>
+    </div>
+  );
 }
 
-export default App;
+export default Bpp;
