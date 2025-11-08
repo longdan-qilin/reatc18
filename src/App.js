@@ -1,6 +1,6 @@
 // import logo from "./logo.svg";
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 
 function Bpp() {
   const [show, setShow] = useState(true);
@@ -35,16 +35,24 @@ function App() {
   */
   useEffect(() => {
     console.log("useEffect 执行了", count);
-    return () => {
-      console.log("effect 清理函数执行了", count);
-    };
+    // return () => {
+    //   console.log("effect 清理函数执行了", count);
+    // };
   }, [count]);
-  useEffect(() => {
-    console.log(name);
-  }, [name]);
-  useEffect(() => {
-    console.log("我是一个副作用");
-  }, [count, name]);
+  // useLayoutEffect 同步执行，但是会在浏览器绘制之前执行
+  // useEffect 异步执行，会在浏览器绘制之后执行
+  useLayoutEffect(() => {
+    console.log("useLayoutEffect 执行了", count);
+    // return () => {
+    //   console.log("layout effect 清理函数执行了", count);
+    // };
+  }, [count]);
+  // useEffect(() => {
+  //   console.log(name);
+  // }, [name]);
+  // useEffect(() => {
+  //   console.log("我是一个副作用");
+  // }, [count, name]);
   // jsx 语法规则： 1. 标签必须闭合，2. 标签必须有根元素
   return (
     <div>
